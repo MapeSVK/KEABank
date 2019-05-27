@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	tools:showIn="navigation_view">
+
+	<group android:checkableBehavior="single">
+		<item
+			android:id="@+id/nav_home"
+			android:title="Home" />
+			<!-- android:icon="@drawable/ic_menu_camera" this is how icon implementation looks like-->
+		<item
+			android:id="@+id/nav_transfer"
+			android:title="Transfer" />
+		<item
+			android:id="@+id/nav_bill"
+			android:title="Bill" />
+		<item
+			android:id="@+id/nav_transfer_record"
+			android:title="Transfer record" />
+		<item
+			android:id="@+id/nav_bill_record"
+			android:title="Bill record" />
+		<item
+			android:id="@+id/nav_settings"
+			android:title="Settings" />
+
+		<item
+			android:id="@+id/nav_sign_out"
+			android:title="Sign out" />
+	</group>
+</menu>
