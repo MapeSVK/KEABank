@@ -45,7 +45,5 @@ public class TransferCheckActivity extends AppCompatActivity {
 
     }
 
-
-
     /*public HashMap<"">*/
 }
