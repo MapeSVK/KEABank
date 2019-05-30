@@ -38,7 +38,6 @@ public class TransferFragment extends Fragment {
     private String accountIdOfReceiverFromChooseAccountActivity;
 
     // 2
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView called");
@@ -156,7 +155,7 @@ public class TransferFragment extends Fragment {
     public void continueButtonPressed() {
         long amount = Long.parseLong(amountEditText.getText().toString().trim());
         //create an Payment object
-        Payment payment = new Payment(accountIdOfPayerFromChooseAccountActivity, amount, accountIdOfReceiverFromChooseAccountActivity,0);
+        Payment payment = new Payment(accountIdOfPayerFromChooseAccountActivity, amount, receiversIdEditText.getText().toString().trim(),0);
         Intent intent = new Intent(getContext(), TransferCheckActivity.class);
         intent.putExtra("transferPaymentObject", payment);
         startActivity(intent);
