@@ -37,6 +37,7 @@ public class ChooseAccountActivity extends AppCompatActivity {
     private List<String> allAccountsList;
     private Map<String, String> keyNameValueIdMap;
     private String chosenAccountId;
+    private List<String> monthlyBasesRegularTransactionsAccounts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,12 @@ public class ChooseAccountActivity extends AppCompatActivity {
         // Check if user is signed in and if yes then update UI
         currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
-            populateMapAndListOfAccounts();
+            String sendingClass = getIntent().getStringExtra("sendingClass");
+            if (sendingClass == null) {
+                populateMapAndListOfAccounts();
+            } else if (sendingClass.equals("RegularTransactionActivity")){
+                populateMapAndListOfAccountsForRegularTransactions();
+            }
         } else {
             startActivity(new Intent(getApplicationContext(), MainActivity.class));
         }
@@ -81,6 +87,35 @@ public class ChooseAccountActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    public void populateMapAndListOfAccountsForRegularTransactions() {
+        CollectionReference collRef = firebaseFirestore.collection("users").document(currentUser.getUid())
+                .collection("accounts");
+
+        collRef.get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                for (String regularTransactionsAccount : monthlyBasesRegularTransactionsAccounts) {
+                                    if (document.getId().equals(regularTransactionsAccount)) {
+                                        allAccountsList.add(document.getId());
+                                        keyNameValueIdMap.put(document.getId(), (String) document.get("accountId")); //bcs accountId is inside of the doc
+                                        System.out.println("1.");
+                                    }
+                                }
+                            }
+                            System.out.println("2.");
+                            populateListViewWithAccounts();
+                            eventAfterClickOnListViewItem();
+                        } else {
+                            Log.w(TAG, "Error while loading the account, please check your internet connection or try later.", task.getException());
+                        }
+                    }
+                });
+
     }
 
     public void populateListViewWithAccounts() {
@@ -115,5 +150,9 @@ public class ChooseAccountActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         currentUser = firebaseAuth.getCurrentUser();
         firebaseFirestore = FirebaseFirestore.getInstance();
+
+        monthlyBasesRegularTransactionsAccounts = new ArrayList<>();
+        monthlyBasesRegularTransactionsAccounts.add("savings");
+        monthlyBasesRegularTransactionsAccounts.add("budget");
     }
 }

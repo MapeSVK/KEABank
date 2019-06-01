@@ -15,7 +15,7 @@
 
 
     <!-- Day spinner -->
-    <string name="auto_pay_day">Day</string>
+    <string name="auto_pay_day">Select day</string>
     <string-array name="days_array">
         <item>1</item>
         <item>2</item>

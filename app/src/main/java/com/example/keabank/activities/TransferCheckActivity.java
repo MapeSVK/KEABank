@@ -113,7 +113,7 @@ public class TransferCheckActivity extends AppCompatActivity {
             // pay
             if (nameOfSendingFragmentFromIntent.trim().equals("TransferFragment")) {
                 paymentProcessTransferFragment();
-            } else {
+            } else if (nameOfSendingFragmentFromIntent.trim().equals("BillFragment")) {
                 paymentProcessBillFragment(new BillPaymentCallback() {
                     @Override
                     public void onCallback(boolean isBillPayed) {
@@ -288,13 +288,14 @@ public class TransferCheckActivity extends AppCompatActivity {
         Map<String, Object> autoBillMap = new HashMap<>();
         autoBillMap.put("amount", amount);
         autoBillMap.put("day", day);
+        autoBillMap.put("accountId", payerAccountIdFromIntent);
 
         firestoreDatabase.collection("users").document(currentUser.getUid()).collection("autoBills").document(autoBillId)
                 .set(autoBillMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "NEW BILL WAS REGISTERED: "+autoBillId +" " + day + " " + amount);
+                        Log.d(TAG, "NEW BILL WAS REGISTERED: "+autoBillId +" " + day + " " + amount + " from acc: " + payerAccountIdFromIntent);
                         showDialogAfterPaymentIsDone();
                     }
                 })

@@ -36,6 +36,11 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 		firstFragmentAfterActivityCreated(new HomeFragment(), savedInstanceState, R.id.nav_home); // set to home fragment
 	}
 
+	// on create zapni metodu ktore pojde cez obe - auto billy a auto regulary
+	// ak sa den v nich zhoduje s dnesnym dnom tak substractuj usera
+	// v pripade auto billu nic viac netreba iba odpocitat z accountId fieldu v billId (5050) napr.
+	// v pripade regulary pripocitaj na svoj ucet (documentID) a odpocitaj z defaultu.
+
 	@Override
 	public void onStart() {
 		super.onStart();
