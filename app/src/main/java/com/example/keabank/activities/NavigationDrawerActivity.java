@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.example.keabank.R;
+import com.example.keabank.fragments.AutoBillListFragment;
 import com.example.keabank.fragments.BillFragment;
 import com.example.keabank.fragments.HomeFragment;
 import com.example.keabank.fragments.TransferFragment;
@@ -126,10 +127,8 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new TransferFragment()).commit();
 		} else if (id == R.id.nav_bill) {
 			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new BillFragment()).commit();
-		} else if (id == R.id.nav_transfer_record) {
-
-		} else if (id == R.id.nav_bill_record) {
-
+		} else if (id == R.id.nav_bill_list) {
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AutoBillListFragment()).commit();
 		} else if (id == R.id.nav_settings) {
 
 		} else if (id == R.id.nav_sign_out) {

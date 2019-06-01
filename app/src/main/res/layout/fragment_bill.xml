@@ -1,6 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+ <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</android.support.constraint.ConstraintLayout>
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/billFragmentChooseAccountButton"
+            android:layout_width="330dp"
+            android:layout_height="38dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="90dp"
+            android:layout_marginEnd="8dp"
+            android:text="Choose Account"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.491"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/billFragmentAmountEditText"
+            android:layout_width="330dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:hint="amount"
+            android:inputType="number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/billFragmentChosenAccountTextView" />
+
+        <EditText
+            android:id="@+id/billFragmentBillIdEditText"
+            android:layout_width="330dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="31dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:hint="bill id"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/billFragmentAmountEditText" />
+
+        <Button
+            android:id="@+id/billFragmentContinueButton"
+            android:layout_width="330dp"
+            android:layout_height="34dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="8dp"
+            android:text="Continue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.492"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/billFragmentAutoDayToggleButton" />
+
+        <TextView
+            android:id="@+id/billFragmentChosenAccountTextView"
+            android:layout_width="320dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="8dp"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/billFragmentChooseAccountButton" />
+
+        <Spinner
+            android:id="@+id/billFragmentAutoBillDaySpinner"
+            android:layout_width="92dp"
+            android:layout_height="27dp"
+            android:layout_marginTop="60dp"
+            android:layout_marginEnd="8dp"
+            android:dropDownWidth="wrap_content"
+            android:entries="@array/days_array"
+            android:prompt="@string/auto_pay_day"
+            android:spinnerMode="dropdown"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/billFragmentAutoDayToggleButton"
+            app:layout_constraintTop_toBottomOf="@+id/billFragmentBillIdEditText" />
+
+        <ToggleButton
+            android:id="@+id/billFragmentAutoDayToggleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="39dp"
+            android:text="ToggleButton"
+            app:layout_constraintEnd_toStartOf="@+id/billFragmentAutoBillDaySpinner"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/billFragmentBillIdEditText" />
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

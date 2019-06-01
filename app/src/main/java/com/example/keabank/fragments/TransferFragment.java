@@ -1,5 +1,7 @@
 package com.example.keabank.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -134,8 +136,7 @@ public class TransferFragment extends Fragment {
                 Log.i(TAG,"accountId of payer in transfer fragment: " + accountIdOfPayerFromChooseAccountActivity);
             }
             else {
-                Toast.makeText(getContext(), "The system could not get payer's account number! Check your internet connection.",
-                        Toast.LENGTH_SHORT).show();
+                showDialogAfterPaymentIsDone("The system could not get payer's account number! Check your internet connection or try again.");
             }
         }
 
@@ -146,18 +147,34 @@ public class TransferFragment extends Fragment {
                 Log.i(TAG,"accountId of receiver in transfer fragment: " + accountIdOfReceiverFromChooseAccountActivity);
             }
             else {
-                Toast.makeText(getContext(), "The system could not get receiver's account number! Check your internet connection.",
-                        Toast.LENGTH_SHORT).show();
+                showDialogAfterPaymentIsDone("The system could not get receiver's account number! Check your internet connection or try again.");
+
             }
         }
     }
 
     public void continueButtonPressed() {
         long amount = Long.parseLong(amountEditText.getText().toString().trim());
-        //create an Payment object
-        Payment payment = new Payment(accountIdOfPayerFromChooseAccountActivity, amount, receiversIdEditText.getText().toString().trim(),0);
+        String receiverId = receiversIdEditText.getText().toString().trim();
+        //create a Payment object
+        Payment payment = new Payment(accountIdOfPayerFromChooseAccountActivity, amount,
+                receiverId,0);
         Intent intent = new Intent(getContext(), TransferCheckActivity.class);
-        intent.putExtra("transferPaymentObject", payment);
+        intent.putExtra("paymentParcelableObject", payment);
+        intent.putExtra("nameOfSendingFragment", TAG);
         startActivity(intent);
+    }
+
+    /* DIALOG */
+    public void showDialogAfterPaymentIsDone(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage(message)
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }

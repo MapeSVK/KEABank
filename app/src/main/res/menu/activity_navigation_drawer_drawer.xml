@@ -15,15 +15,11 @@
 			android:id="@+id/nav_bill"
 			android:title="Bill" />
 		<item
-			android:id="@+id/nav_transfer_record"
-			android:title="Transfer record" />
-		<item
-			android:id="@+id/nav_bill_record"
-			android:title="Bill record" />
+			android:id="@+id/nav_bill_list"
+			android:title="Auto-bill list" />
 		<item
 			android:id="@+id/nav_settings"
 			android:title="Settings" />
-
 		<item
 			android:id="@+id/nav_sign_out"
 			android:title="Sign out" />

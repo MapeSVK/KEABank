@@ -71,7 +71,9 @@ public class ChooseAccountActivity extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 allAccountsList.add(document.getId());
                                 keyNameValueIdMap.put(document.getId(), (String) document.get("accountId"));
+                                System.out.println("1.");
                             }
+                            System.out.println("2.");
                             populateListViewWithAccounts();
                             eventAfterClickOnListViewItem();
                         } else {

@@ -3,21 +3,19 @@ package com.example.keabank.entities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.google.firebase.Timestamp;
-
 public class Payment implements Parcelable {
 
     private String payerAccountId;
     private long amount;
-    private String receiverAccountId;
+    private String receiverAccountOrBillId;
    // private boolean isCredit;
    // private boolean isBill;
     private int autoBillDay;
 
-    public Payment(String payerAccountId, long amount, String receiverAccountId/*, boolean isCredit, boolean isBill*/, int autoBillDay) {
+    public Payment(String payerAccountId, long amount, String receiverAccountOrBillId/*, boolean isCredit, boolean isBill*/, int autoBillDay) {
         this.payerAccountId = payerAccountId;
         this.amount = amount;
-        this.receiverAccountId = receiverAccountId;
+        this.receiverAccountOrBillId = receiverAccountOrBillId;
        // this.isCredit = isCredit;
       //  this.isBill = isBill;
         this.autoBillDay = autoBillDay;
@@ -26,7 +24,7 @@ public class Payment implements Parcelable {
     protected Payment(Parcel in) {
         payerAccountId = in.readString();
         amount = in.readLong();
-        receiverAccountId = in.readString();
+        receiverAccountOrBillId = in.readString();
       //  isCredit = in.readInt() != 0; // boolean will be "true" if "if statement" is not 0
       //  isBill = in.readInt() != 0;
         autoBillDay = in.readInt();
@@ -53,7 +51,7 @@ public class Payment implements Parcelable {
     public void writeToParcel(Parcel parcel, int flags) {
         parcel.writeString(payerAccountId);
         parcel.writeLong(amount);
-        parcel.writeString(receiverAccountId);
+        parcel.writeString(receiverAccountOrBillId);
       //  parcel.writeInt((int) (isCredit ? 1 : 0));     //if boolean == true, int == 1
       //  parcel.writeInt((int) (isBill ? 1 : 0));
         parcel.writeInt(autoBillDay);
@@ -69,8 +67,8 @@ public class Payment implements Parcelable {
         return amount;
     }
 
-    public String getReceiverAccountId() {
-        return receiverAccountId;
+    public String getReceiverAccountOrBillId() {
+        return receiverAccountOrBillId;
     }
 
 
@@ -96,7 +94,7 @@ public class Payment implements Parcelable {
         return "Payment{" +
                 "payerAccountId='" + payerAccountId + '\'' +
                 ", amount=" + amount +
-                ", receiverAccountId='" + receiverAccountId + '\'' +
+                ", receiverAccountOrBillId='" + receiverAccountOrBillId + '\'' +
                 ", autoBillDay=" + autoBillDay +
                 '}';
     }
