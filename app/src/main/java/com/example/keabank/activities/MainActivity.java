@@ -96,6 +96,6 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	public void navigation(View view) {
-		startActivity(new Intent(getApplicationContext(), NavigationDrawerActivity.class));
+		startActivity(new Intent(getApplicationContext(), LoadingActivity.class));
 	}
 }
