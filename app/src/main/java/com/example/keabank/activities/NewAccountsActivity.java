@@ -68,11 +68,7 @@ public class NewAccountsActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        populateListOfPossibleAccounts();
-    }
+
 
     public void populateListOfPossibleAccounts() {
         CollectionReference collRef = firebaseFirestore.collection("users").document(currentUser.getUid())

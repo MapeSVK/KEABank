@@ -55,6 +55,7 @@ public class AutoBillListFragment extends Fragment {
         // Check if user is signed in and if yes then update UI
         currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
+            allAutoBills.clear();
             populateListOfBills(new LoadAutoBillsInterface() {
                 @Override
                 public void onCallback(ArrayList<String> allAutoBills) {

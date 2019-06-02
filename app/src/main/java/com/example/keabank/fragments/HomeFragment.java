@@ -1,10 +1,12 @@
 package com.example.keabank.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,6 +25,7 @@ import android.widget.TextView;
 
 import com.example.keabank.R;
 import com.example.keabank.activities.MainActivity;
+import com.example.keabank.activities.NavigationDrawerActivity;
 import com.example.keabank.activities.NewAccountsActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -90,7 +93,7 @@ public class HomeFragment extends Fragment {
 		currentUser = firebaseAuth.getCurrentUser();
 		if (currentUser != null) {
 			Log.d(TAG, "User " + currentUser.getEmail() + " is in HomeFragment");
-			loadAccountsAsTextFieldsInsideLinearView();
+			new Load().execute();
 		} else {
 			/* validation - if user is not logged in, it can cause problems. For safety reasons user
 			* will be sent back to login activity */
@@ -106,9 +109,11 @@ public class HomeFragment extends Fragment {
 		linearLayout.removeAllViewsInLayout();
 	}
 
+
+
 	/* public metoda ktora najde linear view a v nom vytvori novy TextField s parametrami a s textom ktory bude zobraty z dokumentu
 	* a aj jeho amount a potom aj iconka nech je lepsie vidiet ze sa na to da kliknut */
-	public void loadAccountsAsTextFieldsInsideLinearView() {
+	public void loadAccountsAsTextFieldsInsideLinearView(final FirebaseLoadingCallback firebaseLoadingCallback) {
 		// get prihlaseneho usera
 		// referencia na db collection a z nej nacitaj dokumenty + v string forme aj amount ktory maju zapisany
 		// pre kazdy z nich vytvor novy textfield s parametrami vnutri linear view
@@ -136,14 +141,18 @@ public class HomeFragment extends Fragment {
 								createNewRowInLinearView(document.getId(), String.valueOf(document.get("amount")));
 							}
 
-							//create the add button at the very end
-							//createAddButtonForAddingAccounts();
+							firebaseLoadingCallback.onCallback();
+
 						} else {
 							Log.w(TAG, "Error getting documents.", task.getException());
 						}
 					}
 				});
 		//System.out.println("all possible accounts: " + allPossibleToAddAccounts);
+	}
+
+	private interface FirebaseLoadingCallback {
+		void onCallback();
 	}
 
 
@@ -175,19 +184,28 @@ public class HomeFragment extends Fragment {
 		linearLayout.addView(linearLayoutHorizontal);
 	}
 
-	/*public void createAddButtonForAddingAccounts() {
-		Button button = new Button(getContext());
-		button.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-		button.setText("Add account");
-		button.setBackgroundColor(Color.RED);
-		button.setTextColor(Color.BLACK);
-		button.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				startActivity(new Intent(getContext(), NewAccountsActivity.class));
-			}
-		});
+	class Load extends AsyncTask<String, String, String> {
 
-		linearLayout.addView(button);
-	}*/
+		ProgressDialog progDailog = new ProgressDialog(getContext());
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			progDailog.setMessage("Loading...");
+			progDailog.setIndeterminate(false);
+			progDailog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			progDailog.setCancelable(false);
+			progDailog.show();
+		}
+		@Override
+		protected String doInBackground(String... aurl) {
+			loadAccountsAsTextFieldsInsideLinearView(new FirebaseLoadingCallback() {
+				@Override
+				public void onCallback() {
+					progDailog.dismiss();
+				}
+			});
+			return null;
+		}
+	}
 }
