@@ -1,43 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.RegularTransactionsActivity">
 
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
     <Button
         android:id="@+id/regularChooseAccountButton"
-        android:layout_width="313dp"
-        android:layout_height="42dp"
+        android:layout_width="330dp"
+        android:layout_height="41dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="35dp"
         android:layout_marginEnd="8dp"
+        android:background="#000"
         android:onClick="chooseAccount"
         android:text="Choose Account"
+        android:textColor="#fff"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <TextView
         android:id="@+id/textView5"
-        android:layout_width="314dp"
-        android:layout_height="44dp"
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="68dp"
         android:layout_marginEnd="8dp"
-        android:text="Regular transaction from the default account to the account of your choice"
+        android:text="Regular transaction is a transaction from the default account to the account of your choice"
+        android:textColor="@color/design_default_color_primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/regularAmountEditText"
-        android:layout_width="313dp"
-        android:layout_height="40dp"
+        android:layout_width="330dp"
+        android:layout_height="41dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="38dp"
         android:layout_marginEnd="8dp"
+        android:background="@drawable/my_edit_text"
         android:ems="10"
         android:hint="amount"
         android:inputType="number"
@@ -49,9 +57,9 @@
     <Spinner
         android:id="@+id/regularDaySpinner"
         android:layout_width="90dp"
-        android:layout_height="37dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="17dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="48dp"
         android:layout_marginEnd="8dp"
         android:entries="@array/days_array"
         android:prompt="@string/auto_pay_day"
@@ -63,25 +71,29 @@
 
     <Button
         android:id="@+id/regularSetButton"
-        android:layout_width="313dp"
-        android:layout_height="42dp"
+        android:layout_width="330dp"
+        android:layout_height="41dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="60dp"
         android:layout_marginEnd="8dp"
+        android:background="#000"
         android:onClick="setNewRegularTransaction"
         android:text="SAVE"
+        android:textColor="#fff"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/regularDaySpinner" />
 
     <TextView
         android:id="@+id/regularChosenReceivingAccount"
-        android:layout_width="300dp"
-        android:layout_height="24dp"
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="8dp"
         android:textAlignment="center"
+        android:textColor="@color/design_default_color_primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/regularChooseAccountButton" />
@@ -89,13 +101,15 @@
     <TextView
         android:id="@+id/textView13"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="31dp"
+        android:layout_marginTop="48dp"
         android:text="Day of regular transaction:"
+        android:textColor="@color/design_default_color_primary"
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/regularDaySpinner"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/regularAmountEditText" />
 </android.support.constraint.ConstraintLayout>
+</ScrollView>

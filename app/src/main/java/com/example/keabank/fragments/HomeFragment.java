@@ -54,7 +54,6 @@ public class HomeFragment extends Fragment {
 	// Array of accounts which user doesn't use
 	//private List<String> allPossibleToAddAccounts = new ArrayList<>();
 
-
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -134,6 +133,9 @@ public class HomeFragment extends Fragment {
 							// create first row in vertical layout - total amount from all accounts
 							createNewRowInLinearView("total", String.valueOf(totalBalance));
 
+							// blank line to separate total amount from accounts
+							createNewRowInLinearView("", "");
+
 							for (QueryDocumentSnapshot document : task.getResult()) {
 								//Log.d(TAG, "Accounts document id and amount: " + document.getId() + " => " + document.get("amount"));
 
@@ -164,11 +166,13 @@ public class HomeFragment extends Fragment {
 		// 1. linearlayout horizontal
 		LinearLayout linearLayoutHorizontal = new LinearLayout(getContext());
 		linearLayoutHorizontal.setLayoutParams(new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.MATCH_PARENT, 40));
+				LinearLayout.LayoutParams.MATCH_PARENT, 100));
 		linearLayoutHorizontal.setOrientation(LinearLayout.HORIZONTAL);
 
 		// 2. first text view (on the left) with an account name
 		TextView newTextViewAccount = new TextView(getContext());
+		newTextViewAccount.setTextSize(18);
+		newTextViewAccount.setTextColor(Color.parseColor("#000000"));
 		newTextViewAccount.setText(documentID); //document.getId()
 		newTextViewAccount.setLayoutParams(new LinearLayout.LayoutParams(
 				600, LinearLayout.LayoutParams.MATCH_PARENT));
@@ -176,6 +180,8 @@ public class HomeFragment extends Fragment {
 
 		// 3. second text view (on the right) with a balance
 		TextView newTextViewAmount = new TextView(getContext());
+		newTextViewAmount.setTextSize(18);
+		newTextViewAmount.setTextColor(Color.parseColor("#000000"));
 		newTextViewAmount.setText(amountString); //String.valueOf(document.get("amount"))
 		newTextViewAmount.setLayoutParams(new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
@@ -191,7 +197,7 @@ public class HomeFragment extends Fragment {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			progDailog.setMessage("Loading...");
+			progDailog.setMessage("Loading banking data...");
 			progDailog.setIndeterminate(false);
 			progDailog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 			progDailog.setCancelable(false);

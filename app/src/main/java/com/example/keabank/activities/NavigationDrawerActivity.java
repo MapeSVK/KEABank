@@ -198,7 +198,11 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
 		} else if (id == R.id.nav_settings) {
 			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SettingsFragment()).commit();
 		} else if (id == R.id.nav_sign_out) {
-
+			if(currentUser !=null){
+				firebaseAuth.signOut();
+				startActivity(new Intent(getApplicationContext(), MainActivity.class));
+				System.out.println("user signed out");
+			}
 		}
 
 

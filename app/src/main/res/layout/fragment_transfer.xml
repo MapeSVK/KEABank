@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
     <Button
         android:id="@+id/transferChoosePayerButton"
         android:layout_width="330dp"
-        android:layout_height="38dp"
+        android:layout_height="41dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="90dp"
         android:layout_marginEnd="8dp"
+        android:background="#000"
         android:text="Choose Account"
+        android:textColor="#fff"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,10 +27,11 @@
     <EditText
         android:id="@+id/transferAmountEditText"
         android:layout_width="330dp"
-        android:layout_height="wrap_content"
+        android:layout_height="41dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="8dp"
+        android:background="@drawable/my_edit_text"
         android:ems="10"
         android:hint="amount"
         android:inputType="number"
@@ -36,10 +42,11 @@
     <EditText
         android:id="@+id/transferReceiverIdEditText"
         android:layout_width="330dp"
-        android:layout_height="wrap_content"
+        android:layout_height="41dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="31dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="8dp"
+        android:background="@drawable/my_edit_text"
         android:ems="10"
         android:hint="receiver's id"
         android:inputType="textPersonName"
@@ -52,10 +59,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="25dp"
         android:layout_marginEnd="8dp"
         android:text="Choose your account instead"
-        android:textColor="#2E77BB"
+        android:textColor="@color/design_default_color_primary"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,11 +71,14 @@
     <Button
         android:id="@+id/transferContinueButton"
         android:layout_width="330dp"
-        android:layout_height="34dp"
+        android:layout_height="41dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="55dp"
         android:layout_marginEnd="8dp"
+        android:background="#000"
         android:text="Continue"
+        android:textColor="#fff"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/transferChooseYourAccountTextView" />
@@ -81,7 +91,9 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="8dp"
         android:textAlignment="center"
+        android:textColor="@color/design_default_color_primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/transferChoosePayerButton" />
-</android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

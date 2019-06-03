@@ -1,11 +1,13 @@
 package com.example.keabank.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	// after login button is pressed
-	public void login(View view) {
+	public void login(final View view) {
 		String email = loginEmailEditText.getText().toString().trim();
 		String password = loginPasswordEditText.getText().toString().trim();
 
@@ -65,6 +67,12 @@ public class MainActivity extends AppCompatActivity {
 							Log.d(TAG, "User: " + (currentUser != null ? currentUser.getEmail() : null) + " has been successfully signed in!");
 							//finish(); // activity is done and should be closed
 							//updateUI(user); // START INTENT
+
+                            // hide keyboard
+                            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+							imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
+							startActivity(new Intent(getApplicationContext(), NavigationDrawerActivity.class));
 						} else {
 							// If sign in fails, display a message to the user.
 							Log.w(TAG, "Signing in failed! ", task.getException());

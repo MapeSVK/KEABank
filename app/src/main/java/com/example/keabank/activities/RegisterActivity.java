@@ -49,7 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
 	private FirebaseAuth firebaseAuth;
 	FirebaseFirestore firestoreDatabase;
 	private Button createAccountButton;
-	private EditText firstnameEditText, lastnameEditText, dateOfBirthEditText, passwordEditText, pinEditText, emailEditText;
+	private EditText firstnameEditText, lastnameEditText, dateOfBirthEditText, passwordEditText, emailEditText;
 	private String email, password, firstname, lastname, dateOfBirthString;
 	private int pin;
 	private Timestamp dateOfBirthTimestamp;
@@ -71,7 +71,6 @@ public class RegisterActivity extends AppCompatActivity {
 		lastnameEditText = findViewById(R.id.lastnameEditText);
 		dateOfBirthEditText = findViewById(R.id.dateOfBirthEditText);
 		passwordEditText = findViewById(R.id.passwordEditText);
-		pinEditText = findViewById(R.id.pinEditText);
 		emailEditText = findViewById(R.id.emailEditText);
 	}
 
@@ -82,7 +81,6 @@ public class RegisterActivity extends AppCompatActivity {
 		password = passwordEditText.getText().toString().trim();
 		firstname = firstnameEditText.getText().toString().trim();
 		lastname = lastnameEditText.getText().toString().trim();
-		pin = Integer.parseInt(pinEditText.getText().toString().trim());
 
 		simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		dateOfBirthString = dateOfBirthEditText.getText().toString().trim();
@@ -95,7 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
 		}
 
 		/* validations */
-		emptyFieldValidation(email, password, firstname, lastname, dateOfBirthEditText, pinEditText);
+		emptyFieldValidation(email, password, firstname, lastname, dateOfBirthEditText);
 		// validation for pin, that it needs to be a number
 
 		/* firebase authentication - email/password user creating */
@@ -188,7 +186,7 @@ public class RegisterActivity extends AppCompatActivity {
 	/* Validations section */
 	// urob to tak ze vsetko na jednom mieste
 
-	private void emptyFieldValidation(String email, String password, String firstname, String lastname, EditText dateOfBirthEditText, EditText pinEditText) {
+	private void emptyFieldValidation(String email, String password, String firstname, String lastname, EditText dateOfBirthEditText) {
 		if (TextUtils.isEmpty(email)){
 			Toast.makeText(this, "Email field is empty", Toast.LENGTH_SHORT).show();
 			return;
@@ -207,10 +205,6 @@ public class RegisterActivity extends AppCompatActivity {
 		}
 		if ("".contentEquals(dateOfBirthEditText.getText())) {
 			Toast.makeText(this, "Date Of Birth field is empty", Toast.LENGTH_SHORT).show();
-			return;
-		}
-		if ("".contentEquals(pinEditText.getText())) {
-			Toast.makeText(this, "Pin field is empty", Toast.LENGTH_SHORT).show();
 			return;
 		}
 	}

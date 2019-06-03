@@ -341,7 +341,7 @@ public class TransferCheckActivity extends AppCompatActivity {
         System.out.println("************ Random Value ************ \n" + randomKeyForVerification + " :: " + verificationMap.get(randomKeyForVerification));
 
         // set key as a textview
-        verificationTextView.setText("Please write a number from the card: " + randomKeyForVerification);
+        verificationTextView.setText("Find code in your card: " + randomKeyForVerification);
     }
 
     public boolean checkVerificationCode() {
