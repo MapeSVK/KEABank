@@ -18,7 +18,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-
+/* Activity responsible for login
+ * */
 public class MainActivity extends AppCompatActivity {
 
 	private static final String TAG = "MainActivity";
@@ -31,28 +32,25 @@ public class MainActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
 		initComponents();
 	}
 
+	/* Check if the user is signed in. If so, then create an intent
+	 *  */
 	@Override
 	public void onStart() {
 		super.onStart();
-		// Check if user is signed in and if yes then update UI
 		currentUser = firebaseAuth.getCurrentUser();
 		if (currentUser != null) {
-			//updateUI(currentUser); intent ked user je automaticky prihlaseny
+			startActivity(new Intent(getApplicationContext(), NavigationDrawerActivity.class));
 			Log.d(TAG, "User " + currentUser.getEmail() + " was automatically logged in");
 		}
 	}
 
-	private void initComponents() {
-		loginEmailEditText = findViewById(R.id.loginEmailEditText);
-		loginPasswordEditText = findViewById(R.id.loginPasswordEditText);
-		firebaseAuth = FirebaseAuth.getInstance(); // firebase instance
-	}
-
-	// after login button is pressed
+	/* After the login button is pressed
+	 * Firstly get the data from edit texts (user input)
+	 * Use method to login the user with email and password, hide the keyboard and eventually create an intent
+	 * */
 	public void login(final View view) {
 		String email = loginEmailEditText.getText().toString().trim();
 		String password = loginPasswordEditText.getText().toString().trim();
@@ -83,27 +81,25 @@ public class MainActivity extends AppCompatActivity {
 				});
 	}
 
+	/* Start Reset Password activity after click on the button
+	 * */
 	public void resetPassword(View view) {
 		Intent intent = new Intent(this, ResetPasswordActivity.class);
 		startActivity(intent);
 	}
 
+	/* Start Register Activity after click on the button
+	 * */
 	public void registerNewUser(View view) {
 		Intent intent = new Intent(this, RegisterActivity.class);
 		startActivity(intent);
 	}
 
-
-
-
-	public void logout(View view) {
-		if(currentUser !=null){
-			firebaseAuth.signOut();
-			System.out.println("user signed out");
-		}
-	}
-
-	public void navigation(View view) {
-		startActivity(new Intent(getApplicationContext(), NavigationDrawerActivity.class));
+	/* Initialise the components taken from the view
+	 * */
+	private void initComponents() {
+		loginEmailEditText = findViewById(R.id.loginEmailEditText);
+		loginPasswordEditText = findViewById(R.id.loginPasswordEditText);
+		firebaseAuth = FirebaseAuth.getInstance();
 	}
 }

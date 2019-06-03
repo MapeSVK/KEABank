@@ -19,13 +19,8 @@ import com.example.keabank.fragments.BillFragment;
 import com.example.keabank.fragments.HomeFragment;
 import com.example.keabank.fragments.SettingsFragment;
 import com.example.keabank.fragments.TransferFragment;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 public class NavigationDrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 

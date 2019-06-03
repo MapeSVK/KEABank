@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -40,19 +41,17 @@ import java.text.CollationElementIterator;
 import java.util.ArrayList;
 import java.util.List;
 
+/* This Fragment shows all user's accounts as well as his total balance from all the accounts
+ * User can also add new account by clicking "ADD NEW"
+ * */
 public class HomeFragment extends Fragment {
 	private static final String TAG = "HomeFragment";
 	private Button addNewAccountButton;
-	//private static final Object ArrayList = ;
-	// kazdy fragment musi skumat ci je user prihlaseny a shownut iba tie detaily
 	private FirebaseUser currentUser;
 	private FirebaseFirestore firestoreDatabase;
 	private FirebaseAuth firebaseAuth;
 	private LinearLayout linearLayout;
 	private int totalBalance;
-
-	// Array of accounts which user doesn't use
-	//private List<String> allPossibleToAddAccounts = new ArrayList<>();
 
 	@Nullable
 	@Override
@@ -67,14 +66,13 @@ public class HomeFragment extends Fragment {
 		firestoreDatabase = FirebaseFirestore.getInstance();
 	}
 
-	/* because onCreate has no reference to view, only onViewCreated method so components from the view
-	 * need to be initialised here.
-	 */
+	/* Initialisation of the components as this is the method where "view" is
+	 * Button creates new intent to NewAccountsActivity
+	 * */
 	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		linearLayout = (LinearLayout) getView().findViewById(R.id.homeLinearLayout);
-
 		addNewAccountButton = (Button) view.findViewById(R.id.addNewAccountButton);
 		addNewAccountButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -84,34 +82,26 @@ public class HomeFragment extends Fragment {
 		});
 	}
 
-
+	/* Checks if the user is signed in. If yes it executes new thread with loading while fetching user's data from DB
+	 * */
 	@Override
 	public void onStart() {
 		super.onStart();
-		// Check if user is signed in
 		currentUser = firebaseAuth.getCurrentUser();
 		if (currentUser != null) {
 			Log.d(TAG, "User " + currentUser.getEmail() + " is in HomeFragment");
 			new Load().execute();
 		} else {
 			/* validation - if user is not logged in, it can cause problems. For safety reasons user
-			* will be sent back to login activity */
+			* will be sent back to MainActivity */
 			startActivity(new Intent(getContext(), MainActivity.class));
 		}
 	}
 
-	// for reseting the "table"
-	@Override
-	public void onResume() {
-		super.onResume();
-		totalBalance = 0;
-		linearLayout.removeAllViewsInLayout();
-	}
-
-
-
-	/* public metoda ktora najde linear view a v nom vytvori novy TextField s parametrami a s textom ktory bude zobraty z dokumentu
-	* a aj jeho amount a potom aj iconka nech je lepsie vidiet ze sa na to da kliknut */
+	/* getting all accounts of the signed-in user
+	* creates first row with total balance on the account
+	* for each account creates another row with the name and the balance
+	* */
 	public void loadAccountsAsTextFieldsInsideLinearView(final FirebaseLoadingCallback firebaseLoadingCallback) {
 		// get prihlaseneho usera
 		// referencia na db collection a z nej nacitaj dokumenty + v string forme aj amount ktory maju zapisany
@@ -124,12 +114,10 @@ public class HomeFragment extends Fragment {
 					@Override
 					public void onComplete(@NonNull Task<QuerySnapshot> task) {
 						if (task.isSuccessful()) {
-
 							// total balance for all accounts
 							for (QueryDocumentSnapshot document : task.getResult()) {
 								totalBalance += (long) document.get("amount");
 							}
-
 							// create first row in vertical layout - total amount from all accounts
 							createNewRowInLinearView("total", String.valueOf(totalBalance));
 
@@ -137,30 +125,22 @@ public class HomeFragment extends Fragment {
 							createNewRowInLinearView("", "");
 
 							for (QueryDocumentSnapshot document : task.getResult()) {
-								//Log.d(TAG, "Accounts document id and amount: " + document.getId() + " => " + document.get("amount"));
-
 								// create row for each account user has and show its amount (balance)
 								createNewRowInLinearView(document.getId(), String.valueOf(document.get("amount")));
 							}
-
+							// make a callback so if the process is done, loading dialog disappears
 							firebaseLoadingCallback.onCallback();
-
 						} else {
-							Log.w(TAG, "Error getting documents.", task.getException());
+							Log.w(TAG, "Error fetching the data from the user", task.getException());
+							snackbarShow("Could not get accounts! Check internet connection or try later!");
+							startActivity(new Intent(getContext(), MainActivity.class));
 						}
 					}
 				});
-		//System.out.println("all possible accounts: " + allPossibleToAddAccounts);
 	}
 
-	private interface FirebaseLoadingCallback {
-		void onCallback();
-	}
-
-
-
-	/* represents one row in horizontal layout. First row is total amount from all accounts and all the other rows are different
-	* account separately */
+	/* represents one row in horizontal layout
+	 * creates vertical layout and populates with data from DB */
 	public void createNewRowInLinearView(String documentID, String amountString) {
 		/* children of parent linearlayout (vertical) */
 		// 1. linearlayout horizontal
@@ -190,6 +170,28 @@ public class HomeFragment extends Fragment {
 		linearLayout.addView(linearLayoutHorizontal);
 	}
 
+	/* resets the table */
+	@Override
+	public void onResume() {
+		super.onResume();
+		totalBalance = 0;
+		linearLayout.removeAllViewsInLayout();
+	}
+
+	/* shows snackbar */
+	private void snackbarShow(String msg) {
+		Snackbar snackbarBad = Snackbar
+				.make(getActivity().findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG);
+		snackbarBad.show();
+	}
+
+	/* Callback */
+
+	private interface FirebaseLoadingCallback {
+		void onCallback();
+	}
+
+	/* Loading progress - new thread */
 	class Load extends AsyncTask<String, String, String> {
 
 		ProgressDialog progDailog = new ProgressDialog(getContext());

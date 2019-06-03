@@ -2,6 +2,7 @@ package com.example.keabank.activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,9 +25,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/* List of all possible-to-add accounts */
 public class NewAccountsActivity extends AppCompatActivity {
     private static final String TAG = "NewAccountsActivity";
-    //private LinearLayout linearLayout;
     private ListView listView;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser currentUser;
@@ -38,23 +39,8 @@ public class NewAccountsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_accounts);
-
         initComponents();
     }
-
-    public void initComponents() {
-        firebaseAuth = FirebaseAuth.getInstance();
-        currentUser = firebaseAuth.getCurrentUser();
-        firebaseFirestore = FirebaseFirestore.getInstance();
-       // linearLayout = findViewById(R.id.newAccountsLinearLayout);
-        listView = findViewById(R.id.listView);
-
-        allPossibleToAddAccounts = new ArrayList<>();
-        populateListWithAccounts();
-    }
-
-
-
 
     @Override
     protected void onStart() {
@@ -68,8 +54,9 @@ public class NewAccountsActivity extends AppCompatActivity {
         }
     }
 
-
-
+    /* Gets all accounts from DB, loop through them, and if some of the accounts is same as accounts specified in arraylist
+     * it removes that account. Finally it calls listView populating
+     *  */
     public void populateListOfPossibleAccounts() {
         CollectionReference collRef = firebaseFirestore.collection("users").document(currentUser.getUid())
                 .collection("accounts");
@@ -79,26 +66,25 @@ public class NewAccountsActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 for (int i = 0; i < allPossibleToAddAccounts.size(); i++) {
                                     if (document.getId().equals(allPossibleToAddAccounts.get(i))) {
-                                       // System.out.println(allPossibleToAddAccounts.get(i));
                                         allPossibleToAddAccounts.remove(i);
-                                       // System.out.println("accounts: " + allPossibleToAddAccounts);
-
-
                                     }
                                 }
                             }
+                            // populate the listView
                             populateListViewWithAccounts();
                         } else {
-                            Log.w(TAG, "Error while adding, try again please.", task.getException());
+                            Log.w(TAG, "Error while getting possible accounts", task.getException());
+                            snackbarShow("Could not get data, please try later!");
+                            finish();
                         }
                     }
                 });
     }
 
+    /* using adapter populates the listView */
     public void populateListViewWithAccounts() {
         ArrayAdapter arrayAdapter =
                 new ArrayAdapter<>(getApplicationContext(),android.R.layout.simple_list_item_1, allPossibleToAddAccounts);
@@ -114,21 +100,25 @@ public class NewAccountsActivity extends AppCompatActivity {
         });
     }
 
-
+    /* possible accounts to add (if not added already) */
     public void populateListWithAccounts() {
         allPossibleToAddAccounts.add("savings");
         allPossibleToAddAccounts.add("pension");
         allPossibleToAddAccounts.add("business");
     }
 
-    /*
-    * intentom dostanes nazvy tych ktore tu nie su a obycajne ich iba displaynes
-    * budu clickable a potom ak niekto klikne tak sa mu otvoria terms of use specificke pre dany account. klikne na add a to prida do firestoru
-    * pod ID current usera novy account ak tieto podmienky splna. ak nie tak to ukaze toast
-    *
-    * vlastne vytvoris array v home fragmente a pozries ci sa nachadzaju nejake z toho`array v tomto fragmente, ak nie tak ulozis do arrayu ktory
-    * bude potom poslany sem do tejto activity
-    */
+    public void initComponents() {
+        firebaseAuth = FirebaseAuth.getInstance();
+        currentUser = firebaseAuth.getCurrentUser();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        listView = findViewById(R.id.listView);
+        allPossibleToAddAccounts = new ArrayList<>();
+        populateListWithAccounts();
+    }
 
-
+    private void snackbarShow(String msg) {
+        Snackbar snackbarBad = Snackbar
+                .make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG);
+        snackbarBad.show();
+    }
 }
