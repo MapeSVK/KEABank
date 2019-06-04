@@ -13,7 +13,7 @@ Older & rich guy => **email:** miso.moravik111@gmail.com => **password:** test12
 
 Young & poor guy => **email:** michal.moravik@icloud.com => **password:** test123
 
->The second one is basicly completely new user only with 3k DKK for bill payment test.
+>The young guy is basically completely new user only with 3k DKK for bill payment test.
 
 4. while paying, the card is needed for the verification process. 
 
