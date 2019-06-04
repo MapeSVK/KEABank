@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -52,6 +53,7 @@ public class AutoBillDetailsActivity extends AppCompatActivity {
         }
     }
 
+    /* load details about the bill (specified by billId from intent) */
     public void loadAutoBill() {
         DocumentReference docRef = firebaseFirestore.collection("users").document(currentUser.getUid())
                 .collection("autoBills").document(billIdFromIntent);
@@ -61,20 +63,26 @@ public class AutoBillDetailsActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        dayTextView.setText(document.get("day").toString().trim());
-                        amountTextView.setText(document.get("amount").toString().trim());
-                        deleteButton.setEnabled(true);
-                    } else {
-                        Log.d(TAG, "No such document");
+                    if (document != null) {
+                        if (document.exists()) {
+                            // populate TextViews and activate delete button
+                            dayTextView.setText(document.get("day").toString().trim());
+                            amountTextView.setText(document.get("amount").toString().trim());
+                            deleteButton.setEnabled(true);
+                        } else {
+                            Log.d(TAG, "No such bill");
+                        }
                     }
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
+                    snackbarShow("Something went wrong while loading details about the bil. Try again later.");
                 }
             }
         });
     }
 
+    /* deletes concrete bil
+     */
     public void deleteBill(View view) {
         DocumentReference docRef = firebaseFirestore.collection("users").document(currentUser.getUid())
                 .collection("autoBills").document(billIdFromIntent);
@@ -90,9 +98,8 @@ public class AutoBillDetailsActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getApplicationContext(), "Auto-bill could not be deleted. Please check your" +
-                                        "internet connection or try it later.",
-                                Toast.LENGTH_LONG).show();
+                        snackbarShow("Auto-bill could not be deleted. Please check your" +
+                                        "internet connection or try it later.");
                         Log.w(TAG, "Error deleting auto-bill with id: " + billIdFromIntent, e);
                     }
                 });
@@ -110,6 +117,12 @@ public class AutoBillDetailsActivity extends AppCompatActivity {
         dayTextView = findViewById(R.id.autoBillDetailsDayTextView);
         deleteButton = findViewById(R.id.autoBillDetailsDeleteButton);
         deleteButton.setEnabled(false);
+    }
+
+    private void snackbarShow(String msg) {
+        Snackbar snackbarBad = Snackbar
+                .make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG);
+        snackbarBad.show();
     }
 
     /* DIALOG */

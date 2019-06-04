@@ -44,6 +44,7 @@ public class NewAccountsActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        System.out.println("triggered onStart");
         super.onStart();
         // Check if user is signed in and if yes then update UI
         currentUser = firebaseAuth.getCurrentUser();
@@ -87,17 +88,22 @@ public class NewAccountsActivity extends AppCompatActivity {
     /* using adapter populates the listView */
     public void populateListViewWithAccounts() {
         ArrayAdapter arrayAdapter =
-                new ArrayAdapter<>(getApplicationContext(),android.R.layout.simple_list_item_1, allPossibleToAddAccounts);
+                new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, allPossibleToAddAccounts);
         listView.setAdapter(arrayAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i(TAG, "User clicked " + allPossibleToAddAccounts.get(position));
-                Intent intent = new Intent(getApplicationContext(), AddNewAccountActivity.class);
-                intent.putExtra("accountName", allPossibleToAddAccounts.get(position));
-                startActivity(intent);
-            }
-        });
+
+        if (!allPossibleToAddAccounts.isEmpty()) { // if the list of possible-to-add accounts is not empty then show them
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Log.i(TAG, "User clicked " + allPossibleToAddAccounts.get(position));
+                    Intent intent = new Intent(getApplicationContext(), AddNewAccountActivity.class);
+                    intent.putExtra("accountName", allPossibleToAddAccounts.get(position));
+                    startActivity(intent);
+                }
+            });
+        } else {
+            snackbarShow("The list is empty! No account to add!");
+        }
     }
 
     /* possible accounts to add (if not added already) */

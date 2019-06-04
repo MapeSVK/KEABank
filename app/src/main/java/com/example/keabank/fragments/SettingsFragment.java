@@ -27,6 +27,7 @@ public class SettingsFragment extends Fragment {
         initComponents(view);
     }
 
+    /* Only onClickListeners => other activities */
     public void initComponents(View view) {
         changePasswordButton = (Button) view.findViewById(R.id.settingsChangePasswordButton);
         changePasswordButton.setOnClickListener(new View.OnClickListener() {

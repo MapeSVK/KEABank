@@ -12,10 +12,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import com.example.keabank.R;
 import com.example.keabank.activities.AutoBillDetailsActivity;
-import com.example.keabank.activities.ChooseAccountActivity;
 import com.example.keabank.activities.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -25,9 +23,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class AutoBillListFragment extends Fragment {
     private ListView autoBillListView;
@@ -55,12 +51,12 @@ public class AutoBillListFragment extends Fragment {
         // Check if user is signed in and if yes then update UI
         currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
-            allAutoBills.clear();
-            populateListOfBills(new LoadAutoBillsInterface() {
+            allAutoBills.clear(); // clean ArrayList - refresh
+            populateListOfBills(new FirebaseCallbackInterface() { // firstly populates ArrayList (allAutoBills)
                 @Override
                 public void onCallback(ArrayList<String> allAutoBills) {
-                    populateListView(allAutoBills);
-                    eventAfterClickOnListViewItem();
+                    populateListView(allAutoBills); // populate liestView with the items from the ArrayList
+                    eventAfterClickOnListViewItem(); // triggers an event after click on ListView item
                 }
             });
         } else {
@@ -68,7 +64,12 @@ public class AutoBillListFragment extends Fragment {
         }
     }
 
-    public void populateListOfBills(final LoadAutoBillsInterface loadAutoBillsInterface) {
+    private interface FirebaseCallbackInterface {
+        void onCallback(ArrayList<String> allAutoBills);
+    }
+
+    /* Populating ArrayList of auto-bills */
+    public void populateListOfBills(final FirebaseCallbackInterface firebaseCallbackInterface) {
         CollectionReference collRef = firebaseFirestore.collection("users").document(currentUser.getUid())
                 .collection("autoBills");
 
@@ -77,12 +78,10 @@ public class AutoBillListFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 allAutoBills.add(document.getId());
                             }
-
-                            loadAutoBillsInterface.onCallback(allAutoBills);
+                            firebaseCallbackInterface.onCallback(allAutoBills);
                         } else {
                             Log.w(TAG, "Error while loading the bills, please check your internet connection or try later.", task.getException());
                         }
@@ -90,16 +89,14 @@ public class AutoBillListFragment extends Fragment {
                 });
     }
 
-    private interface LoadAutoBillsInterface {
-        void onCallback(ArrayList<String> allAutoBills);
-    }
-
+    /* Populate listView using adapter */
     public void populateListView(ArrayList<String> allAutoBills) {
         ArrayAdapter arrayAdapter =
                 new ArrayAdapter<>(getContext(),android.R.layout.simple_list_item_1, allAutoBills);
         autoBillListView.setAdapter(arrayAdapter);
     }
 
+    /* Sends Intent with extra data to AutoBillDetailsActivity where details can be seen and auto-bill can be deleted */
     public void eventAfterClickOnListViewItem() {
         autoBillListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

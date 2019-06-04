@@ -103,9 +103,6 @@ public class HomeFragment extends Fragment {
 	* for each account creates another row with the name and the balance
 	* */
 	public void loadAccountsAsTextFieldsInsideLinearView(final FirebaseLoadingCallback firebaseLoadingCallback) {
-		// get prihlaseneho usera
-		// referencia na db collection a z nej nacitaj dokumenty + v string forme aj amount ktory maju zapisany
-		// pre kazdy z nich vytvor novy textfield s parametrami vnutri linear view
 		CollectionReference collRef = firestoreDatabase.collection("users").document(currentUser.getUid())
 				.collection("accounts");
 
@@ -186,7 +183,6 @@ public class HomeFragment extends Fragment {
 	}
 
 	/* Callback */
-
 	private interface FirebaseLoadingCallback {
 		void onCallback();
 	}

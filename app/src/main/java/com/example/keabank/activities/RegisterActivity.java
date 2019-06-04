@@ -1,5 +1,6 @@
 package com.example.keabank.activities;
 
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -34,7 +35,7 @@ public class RegisterActivity extends AppCompatActivity {
 	private static final String TAG = "ResetPasswordActivity";
 	private FirebaseAuth firebaseAuth;
 	private FirebaseFirestore firestoreDatabase;
-	private EditText firstnameEditText, lastnameEditText, dateOfBirthEditText, passwordEditText, emailEditText;
+	private EditText firstnameEditText, lastnameEditText, dateOfBirthEditText, passwordEditText, repeatPasswordEditText,emailEditText;
 	private String email, password, firstname, lastname, dateOfBirthString;
 	private Timestamp dateOfBirthTimestamp;
 	private SimpleDateFormat simpleDateFormat;
@@ -52,7 +53,6 @@ public class RegisterActivity extends AppCompatActivity {
 	 * */
 	public void register(View view){
 		email = emailEditText.getText().toString().trim();
-		password = passwordEditText.getText().toString().trim();
 		firstname = firstnameEditText.getText().toString().trim();
 		lastname = lastnameEditText.getText().toString().trim();
 
@@ -66,8 +66,8 @@ public class RegisterActivity extends AppCompatActivity {
 			// validation - date must be in format: month/day/year
 		}
 
-		emptyFieldValidation(email, password, firstname, lastname, dateOfBirthEditText);
-		createNewUserInAuthentication(email, password);
+		emptyFieldValidation(email, getPassword(), firstname, lastname, dateOfBirthEditText);
+		createNewUserInAuthentication(email, getPassword());
 	}
 
 	/* Creates new user in FirebaseAuth system
@@ -150,6 +150,18 @@ public class RegisterActivity extends AppCompatActivity {
 		collRef.document("budget").set(budAccountInfo);
 	}
 
+	/* validation - check if the value from "password" input is same as value from "repeat password" input
+	 * returns this newPassword if they are same*/
+	public String getPassword() {
+		String password = passwordEditText.getText().toString();
+		String repeatedPassword = repeatPasswordEditText.getText().toString();
+		if (password.equals(repeatedPassword)) {
+			return password;
+		} else {
+			return null;
+		}
+	}
+
 	/* Validation - empty field
 	 * */
 	private void emptyFieldValidation(String email, String password, String firstname, String lastname, EditText dateOfBirthEditText) {
@@ -181,6 +193,7 @@ public class RegisterActivity extends AppCompatActivity {
 		lastnameEditText = findViewById(R.id.lastnameEditText);
 		dateOfBirthEditText = findViewById(R.id.dateOfBirthEditText);
 		passwordEditText = findViewById(R.id.passwordEditText);
+		repeatPasswordEditText = findViewById(R.id.passwordRepeatEditText);
 		emailEditText = findViewById(R.id.emailEditText);
 	}
 
@@ -189,23 +202,4 @@ public class RegisterActivity extends AppCompatActivity {
 				.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG);
 		snackbar.show();
 	}
-	/*
-
-		Date date = new Date();
-		System.out.println("formated day: " + myFormat.format(date));
-		System.out.println(date.getClass());
-
-		String inputString1 = "23.01.1997";
-		String inputString2 = "27.04.1997";
-
-		try {
-			Date date1 = myFormat.parse(inputString1);
-			Date date2 = myFormat.parse(inputString2);
-			long diff = date2.getTime() - date1.getTime();
-			System.out.println ("Days: " + TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-	  */
 }

@@ -1,5 +1,7 @@
 package com.example.keabank.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,11 +15,9 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
 import com.example.keabank.R;
 import com.example.keabank.activities.ChooseAccountActivity;
 import com.example.keabank.activities.MainActivity;
@@ -25,8 +25,8 @@ import com.example.keabank.activities.TransferCheckActivity;
 import com.example.keabank.entities.Payment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
+/* Fragment responsible for creating Payment parcelable object with a values from the input fields */
 public class BillFragment extends Fragment {
     private static final String TAG = "BillFragment";
     private EditText amountEditText, billIdEditText;
@@ -63,14 +63,50 @@ public class BillFragment extends Fragment {
         currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
             Log.d(TAG, "User " + currentUser.getEmail() + " is in BillFragment");
-            Log.i(TAG, "payer: " + accountIdOfPayerFromChooseAccountActivity);
         } else {
             /* validation - if user is not logged in, it can cause problems. For safety reasons user
-             * will be sent back to login activity */
+             * will be sent back to MainActivity */
             startActivity(new Intent(getContext(), MainActivity.class));
         }
     }
 
+    /* expects data from ChooseAccountActivity  */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if (resultCode == ChooseAccountActivity.RESULT_OK) {
+                accountIdOfPayerFromChooseAccountActivity = data.getStringExtra("accountId"); // get chosen accountId
+                chosenPayerAccountTextView.setText(accountIdOfPayerFromChooseAccountActivity); //set this accountId to textView
+                Log.i(TAG, "accountId of payer in Bill fragment: " + accountIdOfPayerFromChooseAccountActivity);
+            } else {
+                showDialog("The system could not get payer's account number! Check your internet connection or try again.");
+            }
+        }
+    }
+
+    /* Method runs after continue button is pressed
+     * if the spinner whose data are days is enabled then take a number (auto-bill day) from this spinner
+     * otherwise write 0
+     *
+     * take amount, id of payer, billId and create new Payment Object and send it as an intent extra.
+     * send name of this fragment too */
+    public void continueButtonPressed() {
+        if (autoDaySpinner.isEnabled()) {
+            chosenNumberFromSpinner = Integer.parseInt(autoDaySpinner.getSelectedItem().toString().trim());
+        } else {
+            chosenNumberFromSpinner = 0;
+        }
+
+        long amount = Long.parseLong(amountEditText.getText().toString().trim());
+        String billId = billIdEditText.getText().toString().trim();
+        //create a Payment object
+        Payment payment = new Payment(accountIdOfPayerFromChooseAccountActivity, amount,
+               billId, chosenNumberFromSpinner);
+        Intent intent = new Intent(getContext(), TransferCheckActivity.class);
+        intent.putExtra("paymentParcelableObject", payment);
+        intent.putExtra("nameOfSendingFragment", TAG);
+        startActivity(intent);
+    }
 
     public void initComponents(View view) {
         amountEditText = (EditText) view.findViewById(R.id.billFragmentAmountEditText);
@@ -78,8 +114,7 @@ public class BillFragment extends Fragment {
         chosenPayerAccountTextView = (TextView) view.findViewById(R.id.billFragmentChosenAccountTextView);
 
         autoDaySpinner = view.findViewById(R.id.billFragmentAutoBillDaySpinner);
-        autoDaySpinner.setEnabled(false);
-        // populate spinner
+        autoDaySpinner.setEnabled(false); //will be set to true after toggle button is clicked
 
         /* CLICKABLE COMPONENTS */
         autoPaymentToggleButton = view.findViewById(R.id.billFragmentAutoDayToggleButton);
@@ -119,36 +154,16 @@ public class BillFragment extends Fragment {
         });
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == 1) {
-            if (resultCode == ChooseAccountActivity.RESULT_OK) {
-                accountIdOfPayerFromChooseAccountActivity = data.getStringExtra("accountId");
-                chosenPayerAccountTextView.setText(accountIdOfPayerFromChooseAccountActivity);
-                Log.i(TAG, "accountId of payer in transfer fragment: " + accountIdOfPayerFromChooseAccountActivity);
-            } else {
-                Toast.makeText(getContext(), "The system could not get payer's account number! Check your internet connection.",
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    public void continueButtonPressed() {
-        if (autoDaySpinner.isEnabled()) {
-            chosenNumberFromSpinner = Integer.parseInt(autoDaySpinner.getSelectedItem().toString().trim());
-        } else {
-            chosenNumberFromSpinner = 0;
-        }
-
-        long amount = Long.parseLong(amountEditText.getText().toString().trim());
-        String billId = billIdEditText.getText().toString().trim();
-        //create a Payment object
-        Payment payment = new Payment(accountIdOfPayerFromChooseAccountActivity, amount,
-               billId, chosenNumberFromSpinner);
-        Intent intent = new Intent(getContext(), TransferCheckActivity.class);
-        intent.putExtra("paymentParcelableObject", payment);
-        intent.putExtra("nameOfSendingFragment", TAG);
-        startActivity(intent);
+    /* DIALOG */
+    public void showDialog(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage(message)
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 }

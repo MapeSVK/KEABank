@@ -8,16 +8,12 @@ public class Payment implements Parcelable {
     private String payerAccountId;
     private long amount;
     private String receiverAccountOrBillId;
-   // private boolean isCredit;
-   // private boolean isBill;
     private int autoBillDay;
 
     public Payment(String payerAccountId, long amount, String receiverAccountOrBillId/*, boolean isCredit, boolean isBill*/, int autoBillDay) {
         this.payerAccountId = payerAccountId;
         this.amount = amount;
         this.receiverAccountOrBillId = receiverAccountOrBillId;
-       // this.isCredit = isCredit;
-      //  this.isBill = isBill;
         this.autoBillDay = autoBillDay;
     }
 
@@ -25,8 +21,6 @@ public class Payment implements Parcelable {
         payerAccountId = in.readString();
         amount = in.readLong();
         receiverAccountOrBillId = in.readString();
-      //  isCredit = in.readInt() != 0; // boolean will be "true" if "if statement" is not 0
-      //  isBill = in.readInt() != 0;
         autoBillDay = in.readInt();
     }
 
@@ -52,11 +46,8 @@ public class Payment implements Parcelable {
         parcel.writeString(payerAccountId);
         parcel.writeLong(amount);
         parcel.writeString(receiverAccountOrBillId);
-      //  parcel.writeInt((int) (isCredit ? 1 : 0));     //if boolean == true, int == 1
-      //  parcel.writeInt((int) (isBill ? 1 : 0));
         parcel.writeInt(autoBillDay);
     }
-
 
     /* GETTERS */
     public String getPayerAccountId() {
@@ -71,22 +62,8 @@ public class Payment implements Parcelable {
         return receiverAccountOrBillId;
     }
 
-
-
-  /*  public boolean isCredit() {
-        return isCredit;
-    }*/
-
-   /* public boolean isBill() {
-        return isBill;
-    }*/
-
     public int getAutoBillDay() {
         return autoBillDay;
-    }
-
-    public void setAutoBillDay(int autoBillDay) {
-        this.autoBillDay = autoBillDay;
     }
 
     @Override

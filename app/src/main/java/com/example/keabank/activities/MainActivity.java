@@ -3,6 +3,7 @@ package com.example.keabank.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -63,8 +64,6 @@ public class MainActivity extends AppCompatActivity {
 							// Sign in success, update UI with the signed-in user's information
 							currentUser = firebaseAuth.getCurrentUser();
 							Log.d(TAG, "User: " + (currentUser != null ? currentUser.getEmail() : null) + " has been successfully signed in!");
-							//finish(); // activity is done and should be closed
-							//updateUI(user); // START INTENT
 
                             // hide keyboard
                             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -74,8 +73,7 @@ public class MainActivity extends AppCompatActivity {
 						} else {
 							// If sign in fails, display a message to the user.
 							Log.w(TAG, "Signing in failed! ", task.getException());
-							Toast.makeText(MainActivity.this, "Login failed. Try again!",
-									Toast.LENGTH_SHORT).show();
+							snackbarShow("Login failed. Check your internet connection or try again later!");
 						}
 					}
 				});
@@ -101,5 +99,11 @@ public class MainActivity extends AppCompatActivity {
 		loginEmailEditText = findViewById(R.id.loginEmailEditText);
 		loginPasswordEditText = findViewById(R.id.loginPasswordEditText);
 		firebaseAuth = FirebaseAuth.getInstance();
+	}
+
+	private void snackbarShow(String msg) {
+		Snackbar snackbarBad = Snackbar
+				.make(findViewById(android.R.id.content), msg, Snackbar.LENGTH_LONG);
+		snackbarBad.show();
 	}
 }

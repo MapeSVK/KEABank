@@ -40,7 +40,7 @@ public class AddNewAccountActivity extends AppCompatActivity {
     private Button addNewAccountButton;
     // get the shortcut of the accountNameFromIntent to firstly merge it with uID and then save it to DB as an accountId
     private String accountNameFromIntentShortcut;
-    private int requiredAmountForBusinessAccount = 70000;
+    private int requiredAmountForBusinessAccount = 70000; // required amount on default account to create business one
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +93,7 @@ public class AddNewAccountActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "Document successfully written!");
+                        addNewAccountButton.setEnabled(false);
                         snackbarShow("Account was successfully added!");
                     }
                 })
@@ -103,7 +104,6 @@ public class AddNewAccountActivity extends AppCompatActivity {
                         snackbarShow("Account could not be added! Please check you internet connection or try later");
                     }
                 });
-        finish();
     }
 
     /* method firstly checks what was the accountName put in Intent
@@ -168,26 +168,44 @@ public class AddNewAccountActivity extends AppCompatActivity {
 
     /* Dummy text to show in text view */
     public String savingsText() {
-        return "Savings account and Organizations with whom\n" +
+        return "Terms:\n" +
+                " Savings account and Organizations with whom\n" +
                 "Diners Club International and/or VISA International and /\n" +
                 "or MasterCard and / or any of their franchises have signed\n" +
                 "a contract and who have agreed to sell the currencies of\n" +
                 "their loyalty programme at a prefixed rate to Diners Club\n" +
                 "International and/or VISA International and / or Mastercard\n" +
+                "and / or any of their respective franchises" +
+                "International and/or VISA International and / or Mastercard\n" +
                 "and / or any of their respective franchises";
     }
 
     public String pensionText() {
-        return "Pension account asmdaksdmkasmdasd" +
-                "asdasdasda dsadasdasdasdasdajks dksaam djkasdkasmdkasmd" +
-                "mkoasmdkamdkasmdkasd" +
-                "\n\n AND CAN BE WITHDRAWED at age 77";
+        return "Terms:\n" +
+                " Pension account and Organizations with whom\n" +
+                "Diners Club International and/or VISA International and /\n" +
+                "or MasterCard and / or any of their franchises have signed\n" +
+                "a contract and who have agreed to sell the currencies of\n" +
+                "their loyalty programme at a prefixed rate to Diners Club\n" +
+                "International and/or VISA International and / or Mastercard\n" +
+                "and / or any of their respective franchises" +
+                "International and/or VISA International and / or Mastercard\n" +
+                "and / or any of their respective franchises" +
+                "\n\n REMEMBER! The pension account can be withdrawn only if you are older than 77 years! ";
     }
 
     public String businessText() {
-        return "Business account asmdaksdmkasmdasd" +
-                "asdasdasda dsadasdasdasdasdajks dksaam djkasdkasmdkasmd" +
-                "mkoasmdkamdkasmdkasd" +
-                "\n\n AND CAN BE ADDED only if the user has at least 14 000DKK on his default account";
+        return "Terms:\n" +
+                " Business account and Organizations with whom\n" +
+                "Diners Club International and/or VISA International and /\n" +
+                "or MasterCard and / or any of their franchises have signed\n" +
+                "a contract and who have agreed to sell the currencies of\n" +
+                "their loyalty programme at a prefixed rate to Diners Club\n" +
+                "International and/or VISA International and / or Mastercard\n" +
+                "and / or any of their respective franchises" +
+                "International and/or VISA International and / or Mastercard\n" +
+                "and / or any of their respective franchises" +
+                "\n\n The business account can be added only if you have " +
+                "more than " + requiredAmountForBusinessAccount + "DKK on your default account";
     }
 }
