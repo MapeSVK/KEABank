@@ -19,6 +19,8 @@ Young & poor guy => **email:** michal.moravik@icloud.com => **password:** test12
 
 ![alt text](https://i.imgur.com/X9vvq1i.png)
 
+5. While paying the bill choose billId which has 4 digits (they are: 1010 or 2020 until 6060 ), each of those bills has amount 1000 which needs to be paid and all of them have "isPaid" field set to "false" so they need to be paid. 
+
 ### Functionalities
 In the application, the user is able to:
 1. register himself and sign in (Firebase Auth)
