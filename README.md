@@ -30,7 +30,7 @@ In the application, the user is able to:
 7. pay a bill
 8. save the bill to his auto-bill list for the automatic payment
 9. change his password
-10. set regular transaction to "pension" and "budget" accounts
+10. set regular transaction to "savings" and "budget" accounts
 
 ### The Database structure
 The main two collections of documents are "bills" and "users".  "users" includes all the users where one of the user has properties firstname, lastname, dateOfBirth and email. The user's subcollections are "accounts", "autoBills", and "regularTransactions". "accounts" is a collection of accounts where one account has its accountId, and the amount (balance). "autoBills" is a collection of saved bills where one bill has billId, amount, and autoBillDay. "regularTransaction" has 2 documents - savings and budget account whose fields are amount and day.
