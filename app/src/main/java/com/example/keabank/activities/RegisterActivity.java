@@ -1,6 +1,6 @@
 package com.example.keabank.activities;
 
-import android.os.Handler;
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -8,9 +8,8 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+
 import com.example.keabank.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -36,9 +35,10 @@ public class RegisterActivity extends AppCompatActivity {
 	private FirebaseAuth firebaseAuth;
 	private FirebaseFirestore firestoreDatabase;
 	private EditText firstnameEditText, lastnameEditText, dateOfBirthEditText, passwordEditText, repeatPasswordEditText,emailEditText;
-	private String email, password, firstname, lastname, dateOfBirthString;
+	private String email, password,repeatedPassword, firstname, lastname, dateOfBirthString;
 	private Timestamp dateOfBirthTimestamp;
 	private SimpleDateFormat simpleDateFormat;
+	private Date dateOfBirthDate;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,32 +47,51 @@ public class RegisterActivity extends AppCompatActivity {
 		initComponents();
 	}
 
-	/* Triggered by button -> firstly gets user inputs, converting birthday to TimeStamp (for firebase usage)
+	/* Triggered by button -> firstly gets user inputs
 	 * Then validates inputs
+	 * converting birthday to TimeStamp (for firebase usage)
 	 * Calls method for creating new user in Firebase Auth
 	 * */
 	public void register(View view){
 		email = emailEditText.getText().toString().trim();
 		firstname = firstnameEditText.getText().toString().trim();
 		lastname = lastnameEditText.getText().toString().trim();
-
-		simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+		password = passwordEditText.getText().toString();
+		repeatedPassword = repeatPasswordEditText.getText().toString();
 		dateOfBirthString = dateOfBirthEditText.getText().toString().trim();
-		try {
-			Date dateOfBirthDate = simpleDateFormat.parse(dateOfBirthString);
-			dateOfBirthTimestamp = new Timestamp(dateOfBirthDate);
-		} catch (ParseException e) {
-			e.printStackTrace();
-			// validation - date must be in format: month/day/year
-		}
 
-		emptyFieldValidation(email, getPassword(), firstname, lastname, dateOfBirthEditText);
-		createNewUserInAuthentication(email, getPassword());
+		// checks if inputs are not empty
+		if (emptyFieldValidation(email, password, repeatedPassword, firstname, lastname, dateOfBirthEditText)) {
+			if (isDateValid(dateOfBirthString)) { //checks if date in String form can be converted to date in Date form
+				dateOfBirthTimestamp = new Timestamp(dateOfBirthDate); // if yes then create new Timestamp with value taken from Date
+				if (isSamePassword(password, repeatedPassword)) { // check if the passwords are identical
+					createNewUserInAuthentication(email, password);
+				}
+			}
+		}
 	}
+
+	/* date validation - date in String form from user input needs to have specified simpleDateFormat
+	* setLenient(false) means that the input must be strictly in the same format as simpleDateFormat. If not, it interrupts
+	* the process with exception */
+	@SuppressLint("SimpleDateFormat")
+	public boolean isDateValid(String dateOfBirthString) {
+		simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+		simpleDateFormat.setLenient(false); // the date in string form needs
+		try {
+			dateOfBirthDate = simpleDateFormat.parse(dateOfBirthString);
+			return true;
+		} catch (ParseException e) {
+			Log.w(TAG, "date from user input (String) could not be parsed to date (validation)");
+			snackbarShow("Wrong date of birth! Must be in this form: \"MM/dd/yyyy\" (e.g. 04/26/1955)");
+			return false;
+		}
+	}
+
 
 	/* Creates new user in FirebaseAuth system
 	 * */
-	private void createNewUserInAuthentication(final String email, String password) {
+	public void createNewUserInAuthentication(final String email, String password) {
 		firebaseAuth.createUserWithEmailAndPassword(email, password)
 				.addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
 					@Override
@@ -150,40 +169,44 @@ public class RegisterActivity extends AppCompatActivity {
 		collRef.document("budget").set(budAccountInfo);
 	}
 
-	/* validation - check if the value from "password" input is same as value from "repeat password" input
-	 * returns this newPassword if they are same*/
-	public String getPassword() {
-		String password = passwordEditText.getText().toString();
-		String repeatedPassword = repeatPasswordEditText.getText().toString();
-		if (password.equals(repeatedPassword)) {
-			return password;
+	/* validation - check if the value from "password" input is same as value from "repeat password" input */
+	public boolean isSamePassword(String password, String repeatPassword) {
+		if (password.equals(repeatPassword)) {
+			return true;
 		} else {
-			return null;
+			snackbarShow("Password and repeated password needs to be same");
+			return false;
 		}
 	}
 
 	/* Validation - empty field
 	 * */
-	private void emptyFieldValidation(String email, String password, String firstname, String lastname, EditText dateOfBirthEditText) {
+	private boolean emptyFieldValidation(String email, String password, String repeatPassword, String firstname, String lastname, EditText dateOfBirthEditText) {
 		if (TextUtils.isEmpty(email)){
 			snackbarShow("Email field is empty");
-			return;
+			return false;
 		}
 		if (TextUtils.isEmpty(password)) {
 			snackbarShow("Password field is empty");
-			return;
+			return false;
+		}
+		if (TextUtils.isEmpty(repeatPassword)) {
+			snackbarShow("Repeat password field is empty");
+			return false;
 		}
 		if (TextUtils.isEmpty(firstname)) {
 			snackbarShow("Firstname field is empty");
-			return;
+			return false;
 		}
 		if (TextUtils.isEmpty(lastname)) {
 			snackbarShow("Lastname field is empty");
-			return;
+			return false;
 		}
 		if ("".contentEquals(dateOfBirthEditText.getText())) {
 			snackbarShow("Date Of Birth field is empty");
+			return false;
 		}
+		return true;
 	}
 
 	private void initComponents() {
